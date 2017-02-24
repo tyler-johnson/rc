@@ -92,11 +92,12 @@ func parseIni(content []byte) (data map[string]interface{}, err error) {
 
 	for _, section := range file.Sections() {
 		for _, key := range section.Keys() {
-			name := key.Name()
+			name := make([]string, 0)
 			if section.Name() != ini.DEFAULT_SECTION {
-				name = section.Name() + "." + name
+				name = append(name, strings.Split(section.Name(), ".")...)
 			}
-			deepSet(data, strings.Split(name, "."), parseValue(key.Value()))
+			name = append(name, key.Name())
+			deepSet(data, name, parseValue(key.Value()))
 		}
 	}
 

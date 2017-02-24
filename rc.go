@@ -21,11 +21,11 @@ func init() {
 	}
 }
 
-func Config(appname string, defaults map[string]interface{}) (map[string]interface{}, error) {
-	return ConfigArgv(appname, defaults, minimist.Parse(nil))
+func Config(appname string, defaults Argv) (Argv, error) {
+	return ConfigArgv(appname, defaults, Argv(minimist.Parse(nil)))
 }
 
-func ConfigArgv(appname string, defaults map[string]interface{}, argv map[string]interface{}) (data map[string]interface{}, err error) {
+func ConfigArgv(appname string, defaults map[string]interface{}, argv map[string]interface{}) (data Argv, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			switch x := r.(type) {
@@ -39,7 +39,7 @@ func ConfigArgv(appname string, defaults map[string]interface{}, argv map[string
 		}
 	}()
 
-	configs := []map[string]interface{}{defaults}
+	configs := []Argv{defaults}
 	conffiles := make([]string, 0)
 	env := parseEnv(appname)
 
@@ -84,11 +84,13 @@ func ConfigArgv(appname string, defaults map[string]interface{}, argv map[string
 		addConfigFile(cc)
 	}
 
-	data = merge(data, configs...)
+	for i := 0; i < len(configs); i++ {
+		data = merge(data, configs[i])
+	}
 	data = merge(data, env)
 	data = merge(data, argv)
 
-	confinfo := map[string]interface{}{
+	confinfo := Argv{
 		"configs": conffiles,
 	}
 	if len(conffiles) > 0 {

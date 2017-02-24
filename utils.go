@@ -13,15 +13,7 @@ import (
 	ini "gopkg.in/ini.v1"
 )
 
-var jsonRegex *regexp.Regexp
-
-func init() {
-	var err error
-	jsonRegex, err = regexp.Compile("^\\s*{")
-	if err != nil {
-		panic(err)
-	}
-}
+var jsonRegex = regexp.MustCompile("^\\s*{")
 
 func contains(s []string, e string) bool {
 	for _, a := range s {

@@ -16,7 +16,7 @@ func main() {
     "somedefault": "value"
   })
 
-  // conf is a basic map[string]interface{} type
+  // conf is a map[string]interface{}
   fmt.Println(conf["foo"])
 }
 ```
